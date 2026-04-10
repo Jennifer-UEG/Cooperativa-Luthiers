@@ -6,10 +6,11 @@ import { LuthierOrmEntity } from './modules/luthier/infrastructure/persistence/t
 import { InstrumentoOrmEntity } from './modules/instrumento/infrastructure/persistence/typeorm/instrumento.orm-entity';
 import { DatabaseModule } from './shared/database/typeorm.module';
 import { LuthierModule } from './modules/luthier/luthier.module';
+import { InstrumentoModule } from './modules/instrumento/instrumento.module';
 
 @Module({
   imports: [
-    DatabaseModule, LuthierModule,
+    DatabaseModule, LuthierModule, InstrumentoModule,
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'cooperatica_luthiers.db',

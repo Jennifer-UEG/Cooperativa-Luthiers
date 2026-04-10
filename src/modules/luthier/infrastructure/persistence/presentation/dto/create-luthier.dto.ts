@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsDate, IsBoolean, IsNumber } from "class-validator";
+import { IsString, IsDate, IsBoolean, IsNumber, IsOptional } from "class-validator";
 
 export class LuthierDto {
     @ApiProperty({ example: 1 })

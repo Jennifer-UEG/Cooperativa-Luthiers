@@ -1,41 +1,48 @@
 import { Injectable, Inject, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
-import * as instrumentoRepositoryPort from './ports/instrumento.repository.port';
+import type { LuthierRepositoryPort } from '../../luthier/infrastructure/persistence/application/ports/luthier.repository.port';
+import type { InstrumentoRepositoryPort } from './ports/instrumento.repository.port';
 import { Instrumento } from '../domain/instrumento';
 
 @Injectable()
 export class InstrumentoService {
     constructor(
         @Inject('InstrumentoRepositoryPort')
-        private readonly instrumentoRepo: instrumentoRepositoryPort.InstrumentoRepositoryPort,
-        // Necessário injetar a porta do Luthier para validar a data de abertura (Exigência do Tema)
+        private readonly instrumentoRepo: InstrumentoRepositoryPort,
+
         @Inject('LuthierRepositoryPort')
-        private readonly luthierRepo: any
+        private readonly luthierRepo: LuthierRepositoryPort
     ) { }
 
-    async create(modeloMadeira: string, dataEntrada: Date, reparoConcluido: boolean, custoReparo: number, luthierId: number): Promise<Instrumento> {
+    async create(
+        modeloMadeira: string,
+        dataEntrada: Date,
+        reparoConcluido: boolean,
+        custoReparo: number,
+        luthierId: number
+    ): Promise<Instrumento> {
 
-        // 1. Validar se o Luthier (Pai) existe (Exigência de integridade)
+        // 1. [Regra de Negócio] Verificar se o Luthier (Oficina) existe
         const luthier = await this.luthierRepo.findById(luthierId);
         if (!luthier) {
-            throw new NotFoundException('Luthier não encontrado para vincular ao instrumento');
+            throw new NotFoundException(`Oficina de Luthier com ID ${luthierId} não encontrada.`);
         }
 
-        // 2. Validação de Data: Entrada não pode ser anterior à abertura da oficina
+        // 2. [Regra de Negócio 2] Data de entrada não pode ser anterior à abertura da oficina
         if (new Date(dataEntrada) < new Date(luthier.dataAbertura)) {
-            throw new BadRequestException('A data de entrada não pode ser anterior à data de abertura da oficina');
+            throw new BadRequestException('A data de entrada do instrumento não pode ser anterior à abertura da oficina.');
         }
 
-        // 3. Validação de Custo: Deve estar entre 0 e 50.000
-        if (custoReparo <= 0 || custoReparo > 50000) {
-            throw new BadRequestException('O custo do reparo deve ser maior que 0 e no máximo 50.000');
+        // 3. [Regra de Negócio 5] Custo do reparo deve estar entre 0 e 50.000
+        if (custoReparo < 0 || custoReparo > 50000) {
+            throw new BadRequestException('O custo do reparo deve ser entre R$ 0,00 e R$ 50.000,00.');
         }
 
-        // 4. Validação de Status: Se concluído, o custo não pode ser zero
+        // 4. [Regra de Negócio 6] Se o reparo está concluído, o custo deve ser maior que zero
         if (reparoConcluido && custoReparo <= 0) {
-            throw new BadRequestException('Instrumentos com reparo concluído devem ter um custo preenchido');
+            throw new BadRequestException('Um reparo concluído exige um custo de manutenção maior que zero.');
         }
 
-        // 5. Validação de Duplicidade: Evitar o mesmo modelo em aberto para o mesmo Luthier
+        // 5. [Regra de Negócio 7] Evitar duplicidade de modelo em reparo para o mesmo luthier
         const todos = await this.instrumentoRepo.findAll();
         const duplicado = todos.find(i =>
             i.modeloMadeira === modeloMadeira &&
@@ -43,7 +50,7 @@ export class InstrumentoService {
             i.luthierId === luthierId
         );
         if (duplicado) {
-            throw new ConflictException('Já existe um instrumento deste modelo em reparo para este luthier');
+            throw new ConflictException('Este luthier já possui um instrumento deste modelo em reparo no momento.');
         }
 
         const instrumento = new Instrumento(null, modeloMadeira, dataEntrada, reparoConcluido, custoReparo, luthierId);
@@ -56,15 +63,15 @@ export class InstrumentoService {
 
     async findById(id: number): Promise<Instrumento | null> {
         const instrumento = await this.instrumentoRepo.findById(id);
-        if (!instrumento) throw new NotFoundException('Instrumento não encontrado');
+        if (!instrumento) throw new NotFoundException('Registro de instrumento não encontrado.');
         return instrumento;
     }
 
     async deactivate(id: number): Promise<Instrumento> {
         const instrumento = await this.instrumentoRepo.findById(id);
-        if (!instrumento) throw new NotFoundException('Instrumento não encontrado');
+        if (!instrumento) throw new NotFoundException('Instrumento não encontrado.');
 
-        instrumento.reparoConcluido = true;
+        instrumento.reparoConcluido = true; // Finaliza o processo de reparo
         return this.instrumentoRepo.update(instrumento);
     }
 

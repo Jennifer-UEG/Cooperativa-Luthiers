@@ -15,13 +15,14 @@ const luthier_orm_entity_1 = require("./modules/luthier/infrastructure/persisten
 const instrumento_orm_entity_1 = require("./modules/instrumento/infrastructure/persistence/typeorm/instrumento.orm-entity");
 const typeorm_module_1 = require("./shared/database/typeorm.module");
 const luthier_module_1 = require("./modules/luthier/luthier.module");
+const instrumento_module_1 = require("./modules/instrumento/instrumento.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_module_1.DatabaseModule, luthier_module_1.LuthierModule,
+            typeorm_module_1.DatabaseModule, luthier_module_1.LuthierModule, instrumento_module_1.InstrumentoModule,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
                 database: 'cooperatica_luthiers.db',

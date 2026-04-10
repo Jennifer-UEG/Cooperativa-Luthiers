@@ -21,6 +21,15 @@ let LuthierService = class LuthierService {
         this.luthierRepo = luthierRepo;
     }
     async create(nomeMestre, dataAbertura, certificada, bancadasNum) {
+        if (bancadasNum < 2) {
+            throw new common_1.BadRequestException('Uma oficina de luthier deve possuir no mínimo 2 bancadas.');
+        }
+        if (nomeMestre.trim().split(' ').length < 2) {
+            throw new common_1.BadRequestException('Informe o nome e sobrenome do mestre luthier.');
+        }
+        if (new Date(dataAbertura) > new Date()) {
+            throw new common_1.BadRequestException('A data de abertura não pode ser uma data futura.');
+        }
         const luthier = new luthier_1.Luthier(null, nomeMestre, dataAbertura, certificada, bancadasNum);
         return this.luthierRepo.create(luthier);
     }
@@ -28,16 +37,22 @@ let LuthierService = class LuthierService {
         return this.luthierRepo.findAll();
     }
     async findById(id) {
-        return this.luthierRepo.findById(id);
+        const luthier = await this.luthierRepo.findById(id);
+        if (!luthier)
+            throw new common_1.NotFoundException('Luthier não encontrado.');
+        return luthier;
     }
     async deactivate(id) {
         const luthier = await this.luthierRepo.findById(id);
         if (!luthier)
-            throw new Error('Luthier não encontrado');
+            throw new common_1.NotFoundException('Luthier não encontrado.');
         luthier.certificada = false;
         return this.luthierRepo.update(luthier);
     }
     async delete(id) {
+        const luthier = await this.luthierRepo.findById(id);
+        if (!luthier)
+            throw new common_1.NotFoundException('Luthier não encontrado.');
         await this.luthierRepo.delete(id);
     }
 };
