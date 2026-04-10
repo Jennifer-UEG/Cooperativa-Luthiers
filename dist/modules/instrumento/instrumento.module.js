@@ -13,18 +13,24 @@ const instrumento_controller_1 = require("./presentation/instrumento.controller"
 const instrumento_service_1 = require("./application/instrumento.service");
 const instrumento_orm_entity_1 = require("./infrastructure/persistence/typeorm/instrumento.orm-entity");
 const instrumento_typeorm_repository_1 = require("./infrastructure/persistence/typeorm/instrumento.typeorm.repository");
+const luthier_orm_entity_1 = require("../luthier/infrastructure/persistence/typeorm/luthier.orm-entity");
+const luthier_typeorm_repository_1 = require("../luthier/infrastructure/persistence/typeorm/luthier.typeorm.repository");
 let InstrumentoModule = class InstrumentoModule {
 };
 exports.InstrumentoModule = InstrumentoModule;
 exports.InstrumentoModule = InstrumentoModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([instrumento_orm_entity_1.InstrumentoOrmEntity])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([instrumento_orm_entity_1.InstrumentoOrmEntity, luthier_orm_entity_1.LuthierOrmEntity])],
         controllers: [instrumento_controller_1.InstrumentoController],
         providers: [
             instrumento_service_1.InstrumentoService,
             {
                 provide: 'InstrumentoRepositoryPort',
                 useClass: instrumento_typeorm_repository_1.InstrumentoTypeOrmRepository,
+            },
+            {
+                provide: 'LuthierRepositoryPort',
+                useClass: luthier_typeorm_repository_1.LuthierTypeOrmRepository,
             },
         ],
     })

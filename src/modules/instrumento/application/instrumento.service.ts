@@ -1,12 +1,12 @@
 import { Injectable, Inject, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
-import { InstrumentoRepositoryPort } from './ports/instrumento.repository.port';
+import * as instrumentoRepositoryPort from './ports/instrumento.repository.port';
 import { Instrumento } from '../domain/instrumento';
 
 @Injectable()
 export class InstrumentoService {
     constructor(
         @Inject('InstrumentoRepositoryPort')
-        private readonly instrumentoRepo: InstrumentoRepositoryPort,
+        private readonly instrumentoRepo: instrumentoRepositoryPort.InstrumentoRepositoryPort,
         // Necessário injetar a porta do Luthier para validar a data de abertura (Exigência do Tema)
         @Inject('LuthierRepositoryPort')
         private readonly luthierRepo: any
