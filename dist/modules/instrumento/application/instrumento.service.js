@@ -63,6 +63,9 @@ let InstrumentoService = class InstrumentoService {
         return this.instrumentoRepo.update(instrumento);
     }
     async delete(id) {
+        const exists = await this.instrumentoRepo.findById(id);
+        if (!exists)
+            throw new common_1.NotFoundException('Instrumento não encontrado.');
         await this.instrumentoRepo.delete(id);
     }
 };

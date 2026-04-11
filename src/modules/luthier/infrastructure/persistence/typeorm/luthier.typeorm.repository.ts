@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { LuthierRepositoryPort } from '../application/ports/luthier.repository.port';
-import { Luthier } from '../domain/luthier';
+import { LuthierRepositoryPort } from '../../../application/ports/luthier.repository.port';
+import { Luthier } from '../../../domain/luthier';
 import { LuthierOrmEntity } from './luthier.orm-entity';
 
 @Injectable()
@@ -28,6 +28,11 @@ export class LuthierTypeOrmRepository implements LuthierRepositoryPort {
         return found ? this.toDomain(found) : null;
     }
 
+    async findByIdWithInstrumentos(id: number): Promise<any> {
+        const found = await this.repo.findOne({ where: { id }, relations: ['instrumentos'] });
+        return found || null;
+    }
+
     async findAll(): Promise<Luthier[]> {
         const items = await this.repo.find({ order: { id: 'DESC' } });
         return items.map(this.toDomain);
@@ -35,7 +40,7 @@ export class LuthierTypeOrmRepository implements LuthierRepositoryPort {
 
     async update(user: Luthier): Promise<Luthier> {
         const orm = await this.repo.findOneBy({ id: user.id! });
-        if (!orm) throw new Error('User not found');
+        if (!orm) throw new Error('Luthier not found');
 
         orm.nomeMestre = user.nomeMestre;
         orm.dataAbertura = user.dataAbertura;

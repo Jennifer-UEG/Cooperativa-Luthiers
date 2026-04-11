@@ -1,5 +1,4 @@
-export declare class LuthierDto {
-    id: number;
+export declare class CreateLuthierDto {
     nomeMestre: string;
     dataAbertura: Date;
     certificada: boolean;

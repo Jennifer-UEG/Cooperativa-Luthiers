@@ -9,8 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LuthierModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const luthier_controller_1 = require("./infrastructure/persistence/presentation/luthier.controller");
-const luthier_service_1 = require("./infrastructure/persistence/application/luthier.service");
+const luthier_controller_1 = require("./presentation/luthier.controller");
+const luthier_service_1 = require("./application/luthier.service");
 const luthier_orm_entity_1 = require("./infrastructure/persistence/typeorm/luthier.orm-entity");
 const luthier_typeorm_repository_1 = require("./infrastructure/persistence/typeorm/luthier.typeorm.repository");
 let LuthierModule = class LuthierModule {

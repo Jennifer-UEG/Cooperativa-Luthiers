@@ -20,7 +20,7 @@ exports.DatabaseModule = DatabaseModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'sqlite',
-                database: 'data/app.db',
+                database: 'data/cooperativa_luthiers.db',
                 entities: [instrumento_orm_entity_1.InstrumentoOrmEntity, luthier_orm_entity_1.LuthierOrmEntity],
                 synchronize: true,
             }),

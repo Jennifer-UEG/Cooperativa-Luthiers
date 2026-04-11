@@ -21,14 +21,23 @@ let LuthierService = class LuthierService {
         this.luthierRepo = luthierRepo;
     }
     async create(nomeMestre, dataAbertura, certificada, bancadasNum) {
+        if (!nomeMestre || !dataAbertura || certificada === undefined || certificada === null || bancadasNum === undefined || bancadasNum === null) {
+            throw new common_1.BadRequestException('Todos os campos são obrigatórios: nomeMestre, dataAbertura, certificada, bancadasNum.');
+        }
         if (bancadasNum < 2) {
             throw new common_1.BadRequestException('Uma oficina de luthier deve possuir no mínimo 2 bancadas.');
         }
+        if (!Number.isInteger(bancadasNum)) {
+            throw new common_1.BadRequestException('A quantidade de bancadas deve ser um número inteiro.');
+        }
         if (nomeMestre.trim().split(' ').length < 2) {
-            throw new common_1.BadRequestException('Informe o nome e sobrenome do mestre luthier.');
+            throw new common_1.BadRequestException('Informe o nome e sobrenome completo do mestre luthier.');
         }
         if (new Date(dataAbertura) > new Date()) {
             throw new common_1.BadRequestException('A data de abertura não pode ser uma data futura.');
+        }
+        if (new Date(dataAbertura) < new Date('1900-01-01')) {
+            throw new common_1.BadRequestException('A data de abertura não pode ser anterior ao ano de 1900.');
         }
         const luthier = new luthier_1.Luthier(null, nomeMestre, dataAbertura, certificada, bancadasNum);
         return this.luthierRepo.create(luthier);
@@ -41,6 +50,34 @@ let LuthierService = class LuthierService {
         if (!luthier)
             throw new common_1.NotFoundException('Luthier não encontrado.');
         return luthier;
+    }
+    async findWithInstrumentos(id) {
+        const luthier = await this.luthierRepo.findByIdWithInstrumentos(id);
+        if (!luthier)
+            throw new common_1.NotFoundException('Luthier não encontrado.');
+        return luthier;
+    }
+    async update(id, nomeMestre, dataAbertura, certificada, bancadasNum) {
+        const luthier = await this.luthierRepo.findById(id);
+        if (!luthier)
+            throw new common_1.NotFoundException('Luthier não encontrado.');
+        if (bancadasNum < 2) {
+            throw new common_1.BadRequestException('Uma oficina de luthier deve possuir no mínimo 2 bancadas.');
+        }
+        if (!Number.isInteger(bancadasNum)) {
+            throw new common_1.BadRequestException('A quantidade de bancadas deve ser um número inteiro.');
+        }
+        if (nomeMestre.trim().split(' ').length < 2) {
+            throw new common_1.BadRequestException('Informe o nome e sobrenome completo do mestre luthier.');
+        }
+        if (new Date(dataAbertura) > new Date()) {
+            throw new common_1.BadRequestException('A data de abertura não pode ser uma data futura.');
+        }
+        luthier.nomeMestre = nomeMestre;
+        luthier.dataAbertura = dataAbertura;
+        luthier.certificada = certificada;
+        luthier.bancadasNum = bancadasNum;
+        return this.luthierRepo.update(luthier);
     }
     async deactivate(id) {
         const luthier = await this.luthierRepo.findById(id);

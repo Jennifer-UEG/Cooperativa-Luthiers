@@ -1,5 +1,5 @@
 import { Injectable, Inject, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
-import type { LuthierRepositoryPort } from '../../luthier/infrastructure/persistence/application/ports/luthier.repository.port';
+import type { LuthierRepositoryPort } from '../../luthier/application/ports/luthier.repository.port';
 import type { InstrumentoRepositoryPort } from './ports/instrumento.repository.port';
 import { Instrumento } from '../domain/instrumento';
 
@@ -76,6 +76,8 @@ export class InstrumentoService {
     }
 
     async delete(id: number): Promise<void> {
+        const exists = await this.instrumentoRepo.findById(id);
+        if (!exists) throw new NotFoundException('Instrumento não encontrado.');
         await this.instrumentoRepo.delete(id);
     }
 }

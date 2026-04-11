@@ -8,7 +8,7 @@ import { LuthierOrmEntity } from '../../modules/luthier/infrastructure/persisten
     imports: [
         TypeOrmModule.forRoot({
             type: 'sqlite',
-            database: 'data/app.db',
+            database: 'data/cooperativa_luthiers.db',
             entities: [InstrumentoOrmEntity, LuthierOrmEntity],
             synchronize: true,
         }),

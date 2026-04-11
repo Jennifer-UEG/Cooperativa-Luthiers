@@ -16,7 +16,7 @@ exports.LuthierTypeOrmRepository = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const luthier_1 = require("../domain/luthier");
+const luthier_1 = require("../../../domain/luthier");
 const luthier_orm_entity_1 = require("./luthier.orm-entity");
 let LuthierTypeOrmRepository = class LuthierTypeOrmRepository {
     repo;
@@ -37,6 +37,10 @@ let LuthierTypeOrmRepository = class LuthierTypeOrmRepository {
         const found = await this.repo.findOneBy({ id });
         return found ? this.toDomain(found) : null;
     }
+    async findByIdWithInstrumentos(id) {
+        const found = await this.repo.findOne({ where: { id }, relations: ['instrumentos'] });
+        return found || null;
+    }
     async findAll() {
         const items = await this.repo.find({ order: { id: 'DESC' } });
         return items.map(this.toDomain);
@@ -44,7 +48,7 @@ let LuthierTypeOrmRepository = class LuthierTypeOrmRepository {
     async update(user) {
         const orm = await this.repo.findOneBy({ id: user.id });
         if (!orm)
-            throw new Error('User not found');
+            throw new Error('Luthier not found');
         orm.nomeMestre = user.nomeMestre;
         orm.dataAbertura = user.dataAbertura;
         orm.certificada = user.certificada;

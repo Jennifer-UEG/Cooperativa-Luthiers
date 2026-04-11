@@ -1,4 +1,4 @@
-import type { LuthierRepositoryPort } from '../../luthier/infrastructure/persistence/application/ports/luthier.repository.port';
+import type { LuthierRepositoryPort } from '../../luthier/application/ports/luthier.repository.port';
 import type { InstrumentoRepositoryPort } from './ports/instrumento.repository.port';
 import { Instrumento } from '../domain/instrumento';
 export declare class InstrumentoService {

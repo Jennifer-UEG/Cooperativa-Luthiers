@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LuthierController } from './infrastructure/persistence/presentation/luthier.controller';
-import { LuthierService } from './infrastructure/persistence/application/luthier.service';
+import { LuthierController } from './presentation/luthier.controller';
+import { LuthierService } from './application/luthier.service';
 import { LuthierOrmEntity } from './infrastructure/persistence/typeorm/luthier.orm-entity';
 import { LuthierTypeOrmRepository } from './infrastructure/persistence/typeorm/luthier.typeorm.repository';
 
@@ -17,3 +17,4 @@ import { LuthierTypeOrmRepository } from './infrastructure/persistence/typeorm/l
     ],
 })
 export class LuthierModule { }
+
