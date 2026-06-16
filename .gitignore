@@ -1,1 +1,33 @@
-node_modules
+# Dependências
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+build/
+.angular/
+
+# Ambiente
+.env
+.env.local
+.env.production
+
+# Banco de dados local
+*.db
+*.sqlite
+
+# Cache do Turborepo
+.turbo/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
